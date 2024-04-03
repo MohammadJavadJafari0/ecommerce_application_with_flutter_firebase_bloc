@@ -18,7 +18,12 @@ class HomeScreen extends StatelessWidget {
     return Theme(
       data: customTheme(),
       child: Scaffold(
-        appBar: CustomAppBar(title: 'Zero to Unicorn'),
+        appBar: PreferredSize(
+          preferredSize: Size.fromHeight(75.0),
+          child: Center(
+            child: CustomAppBar(title: 'Zero to Unicorn'),
+          ),
+        ),
         bottomNavigationBar: CostumNavBar(),
         body: Column(
           children: [
