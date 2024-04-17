@@ -1,6 +1,5 @@
-import 'package:ecommerce_application_with_flutter_firebase_bloc/widgets/costum_appbar.dart';
-import 'package:ecommerce_application_with_flutter_firebase_bloc/widgets/costum_navbar.dart';
 import 'package:flutter/material.dart';
+import '../../widgets/widgets.dart';
 
 class CartScreen extends StatelessWidget {
   static const String routeName = '/cart';

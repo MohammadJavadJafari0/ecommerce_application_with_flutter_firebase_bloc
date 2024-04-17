@@ -23,8 +23,8 @@ TextTheme textTheme() {
     headline6: TextStyle(
         color: Colors.black, fontSize: 14, fontWeight: FontWeight.normal),
     bodyText1: TextStyle(
-        color: Colors.black, fontSize: 12, fontWeight: FontWeight.normal),
+        color: Colors.black, fontSize: 14, fontWeight: FontWeight.normal),
     bodyText2: TextStyle(
-        color: Colors.black, fontSize: 12, fontWeight: FontWeight.normal),
+        color: Colors.black, fontSize: 13, fontWeight: FontWeight.normal),
   );
 }

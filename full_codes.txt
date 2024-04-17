@@ -1,0 +1,289 @@
+main.dart :
+
+import 'package:ecommerce_application_with_flutter_firebase_bloc/config/app_router.dart';
+import 'package:ecommerce_application_with_flutter_firebase_bloc/config/theme.dart';
+import 'package:ecommerce_application_with_flutter_firebase_bloc/screens/home/home_screen.dart';
+import 'package:flutter/material.dart';
+
+void main() {
+  runApp(const MyApp());
+}      
+
+class MyApp extends StatelessWidget {
+  const MyApp({Key? key}) : super(key: key);
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      title: "Zero to Unicorn",
+      theme: customTheme(),
+      onGenerateRoute: AppRouter.onGenerateRoute,
+      initialRoute: HomeScreen.routeName,
+      home: HomeScreen(),
+    );
+  }
+}
+
+
+
+
+
+
+
+in config foldar =
+
+app_router.dart :
+
+import 'package:ecommerce_application_with_flutter_firebase_bloc/models/catagory_model.dart';
+import 'package:ecommerce_application_with_flutter_firebase_bloc/models/models.dart';
+import 'package:ecommerce_application_with_flutter_firebase_bloc/screens/product/product_screen.dart';
+import 'package:ecommerce_application_with_flutter_firebase_bloc/screens/screens.dart';
+import 'package:flutter/material.dart';
+
+class AppRouter {
+  static Route onGenerateRoute(RouteSettings setting) {
+    print("This is route: ${setting.name}");
+
+    switch (setting.name) {
+      case '/':
+        return HomeScreen.route();
+      case HomeScreen.routeName:
+        return HomeScreen.route();
+      case CartScreen.routeName:
+        return CartScreen.route();
+      case ProductScreen.routeName:
+        return ProductScreen.route(product: setting.arguments as Product);
+      case WishlistScreen.routeName:
+        return WishlistScreen.route();
+      case CatalogScreen.routeName:
+        return CatalogScreen.route(category: setting.arguments as Category);
+
+      default:
+        return _errorRoute();
+    }
+  }
+
+  static Route _errorRoute() {
+    return MaterialPageRoute(
+        builder: (_) => Scaffold(
+              appBar: AppBar(title: const Text('Error')),
+            ),
+        settings: const RouteSettings(name: '/error'));
+  }
+}
+
+
+
+theme.dart :
+
+import 'package:flutter/material.dart';
+
+ThemeData customTheme() {
+  return ThemeData(
+    scaffoldBackgroundColor: Colors.white,
+    fontFamily: 'Avenir',
+    textTheme: textTheme(),
+  );
+}
+
+TextTheme textTheme() {
+  return const TextTheme(
+    headline1: TextStyle(
+        color: Colors.black, fontSize: 32, fontWeight: FontWeight.bold),
+    headline2: TextStyle(
+        color: Colors.black, fontSize: 28, fontWeight: FontWeight.bold),
+    headline3: TextStyle(
+        color: Colors.black, fontSize: 18, fontWeight: FontWeight.bold),
+    headline4: TextStyle(
+        color: Colors.black, fontSize: 16, fontWeight: FontWeight.bold),
+    headline5: TextStyle(
+        color: Colors.black, fontSize: 14, fontWeight: FontWeight.bold),
+    headline6: TextStyle(
+        color: Colors.black, fontSize: 14, fontWeight: FontWeight.normal),
+    bodyText1: TextStyle(
+        color: Colors.black, fontSize: 14, fontWeight: FontWeight.normal),
+    bodyText2: TextStyle(
+        color: Colors.black, fontSize: 13, fontWeight: FontWeight.normal),
+  );
+}
+
+
+
+
+
+
+in models foldar = 
+
+catagory_model.dart :
+
+import 'package:equatable/equatable.dart';
+
+class Category extends Equatable {
+  final String name;
+  final String imageUrl;
+
+  const Category({
+    required this.name,
+    required this.imageUrl,
+  });
+
+  @override
+  List<Object?> get props => [name, imageUrl];
+
+  static List<Category> catagories = [
+    Category(
+      name: 'Women',
+      imageUrl:
+          'https://images-eu.ssl-images-amazon.com/images/G/02/AMAZON-FASHION/2024/FASHION/FLIP/03_MARCH/L1W_DESK_4-BLOCK_04.jpg'),
+    Category(
+      name: 'Kids & Baby',
+      imageUrl:
+          'https://images-eu.ssl-images-amazon.com/images/G/02/AMAZON-FASHION/2023/FASHION/FLIP/STOREFRONT/05_MAY/KIDS/Storefront_Image_M_BB_Bab_375x488.jpg'),
+    Category(
+        name: 'Men',
+        imageUrl:
+          'https://images-eu.ssl-images-amazon.com/images/G/02/AMAZON-FASHION/2024/FASHION/FLIP/03_MARCH/L1M_DESK_4-BLOCK_03.jpg'
+    ),
+    Category(
+        name: 'Luggage & Travel',
+        imageUrl:
+          'https://m.media-amazon.com/images/I/81wwYRDv4nL._AC_UL320_.jpg'
+    ),
+  ];
+}
+
+
+
+models.dart :
+
+export 'catagory_model.dart';
+export 'product_model.dart';
+
+
+
+
+product_model.dart :
+
+import 'package:equatable/equatable.dart';
+
+class Product extends Equatable {
+  final String name;
+  final String catagory;
+  final String imageUrl;
+  final double price;
+  final bool isRecommended;
+  final bool isPopular;
+
+  Product(
+      {required this.name,
+      required this.catagory,
+      required this.imageUrl,
+      required this.price,
+      required this.isRecommended,
+      required this.isPopular});
+
+  @override
+  List<Object?> get props =>
+      [name, catagory, imageUrl, price, isPopular, isRecommended];
+
+  static List<Product> products = [
+    Product(
+        name: 'Maxi Dress',
+        catagory: 'Women',
+        imageUrl:
+            'https://m.media-amazon.com/images/I/71F0A0G65xL._AC_SY500_.jpg',
+        price: 45.99,
+        isPopular: true,
+        isRecommended: true),
+    Product(
+        name: 'Mona pants',
+        catagory: 'Women',
+        imageUrl:
+            'https://m.media-amazon.com/images/I/31tBp3eCyAL._SR240,220_.jpg',
+        price: 50,
+        isPopular: false,
+        isRecommended: true),
+    Product(
+        name: 'Travel Backpack',
+        catagory: 'Luggage & Travel',
+        imageUrl:
+            'https://m.media-amazon.com/images/I/71twnynE71L._AC_UL320_.jpg',
+        price: 29.99,
+        isPopular: true,
+        isRecommended: false),
+    Product(
+        name: 'Lightweight ABS',
+        catagory: 'Luggage & Travel',
+        imageUrl:
+            'https://m.media-amazon.com/images/I/81IWqnzKiiL._AC_UL320_.jpg',
+        price: 44.99,
+        isPopular: true,
+        isRecommended: false),
+    Product(
+        name: 'Cotton hoodie',
+        catagory: 'Men',
+        imageUrl:
+            'https://m.media-amazon.com/images/I/71trlmd1g6L._AC_UL320_.jpg',
+        price: 86.99,
+        isPopular: true,
+        isRecommended: false),
+    Product(
+        name: 'cotton Shirts',
+        catagory: 'Men',
+        imageUrl:
+            'https://m.media-amazon.com/images/I/61NAbTElNEL._AC_UL320_.jpg',
+        price: 20.99,
+        isPopular: true,
+        isRecommended: true),
+    Product(
+        name: 'Boy jacket',
+        catagory: 'Kids & Baby',
+        imageUrl:
+            'https://m.media-amazon.com/images/I/71DIFMUCTAL._AC_UL320_.jpg',
+        price: 31.99,
+        isPopular: true,
+        isRecommended: true),
+    Product(
+        name: 'Girls Skirt',
+        catagory: 'Kids & Baby',
+        imageUrl:
+            'https://m.media-amazon.com/images/I/81WVBb1njTL._AC_UL320_.jpg',
+        price: 12.99,
+        isPopular: true,
+        isRecommended: true),
+    Product(
+        name: 'Printed Raincoat',
+        catagory: 'Kids & Baby',
+        imageUrl:
+            'https://m.media-amazon.com/images/I/81T5z9xdQaL._AC_UL320_.jpg',
+        price: 26.64,
+        isPopular: false,
+        isRecommended: true),
+  ];
+}
+
+
+
+cart_screen.dart :
+
+import 'package:flutter/material.dart';
+import '../../widgets/widgets.dart';
+
+class CartScreen extends StatelessWidget {
+  static const String routeName = '/cart';
+  static Route route() {
+    return MaterialPageRoute(
+        builder: (_) => CartScreen(), settings: RouteSettings(name: routeName));
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: CustomAppBar(title: 'Cart'),
+      bottomNavigationBar: CostumNavBar(),
+    );
+  }
+}
+
+
+

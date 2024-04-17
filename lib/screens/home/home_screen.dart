@@ -1,9 +1,9 @@
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:ecommerce_application_with_flutter_firebase_bloc/config/theme.dart';
-import 'package:ecommerce_application_with_flutter_firebase_bloc/models/product_model.dart';
 import 'package:ecommerce_application_with_flutter_firebase_bloc/widgets/widgets.dart';
-import 'package:carousel_slider/carousel_slider.dart';
-import 'package:ecommerce_application_with_flutter_firebase_bloc/models/catagory_model.dart';
+
+import '../../models/models.dart';
 
 class HomeScreen extends StatelessWidget {
   static const String routeName = '/';
@@ -18,11 +18,8 @@ class HomeScreen extends StatelessWidget {
     return Theme(
       data: customTheme(),
       child: Scaffold(
-        appBar: PreferredSize(
-          preferredSize: Size.fromHeight(75.0),
-          child: Center(
-            child: CustomAppBar(title: 'Zero to Unicorn'),
-          ),
+        appBar: CustomAppBar(
+          title: 'Zero to Unicorn',
         ),
         bottomNavigationBar: CostumNavBar(),
         body: Column(
