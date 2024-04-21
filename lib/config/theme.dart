@@ -19,9 +19,9 @@ TextTheme textTheme() {
     headline4: TextStyle(
         color: Colors.black, fontSize: 16, fontWeight: FontWeight.bold),
     headline5: TextStyle(
-        color: Colors.black, fontSize: 14, fontWeight: FontWeight.bold),
+        color: Colors.black, fontSize: 13.5, fontWeight: FontWeight.bold),
     headline6: TextStyle(
-        color: Colors.black, fontSize: 14, fontWeight: FontWeight.normal),
+        color: Colors.black, fontSize: 13.5, fontWeight: FontWeight.normal),
     bodyText1: TextStyle(
         color: Colors.black, fontSize: 14, fontWeight: FontWeight.normal),
     bodyText2: TextStyle(
