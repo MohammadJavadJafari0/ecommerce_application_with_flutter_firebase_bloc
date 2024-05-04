@@ -2,82 +2,40 @@ import 'package:ecommerce_application_with_flutter_firebase_bloc/models/product_
 import 'package:equatable/equatable.dart';
 
 class Cart extends Equatable {
-  Cart();
+  final List<Product> products;
 
-  static List<Product> products = [
-    Product(
-        name: 'Maxi Dress',
-        catagory: 'Women',
-        imageUrl:
-            'https://m.media-amazon.com/images/I/71F0A0G65xL._AC_SY500_.jpg',
-        price: 45.99,
-        isPopular: true,
-        isRecommended: true),
-    Product(
-        name: 'Mona pants',
-        catagory: 'Women',
-        imageUrl:
-            'https://m.media-amazon.com/images/I/31tBp3eCyAL._SR240,220_.jpg',
-        price: 50,
-        isPopular: false,
-        isRecommended: true),
-    Product(
-        name: 'Travel Backpack',
-        catagory: 'Luggage & Travel',
-        imageUrl:
-            'https://m.media-amazon.com/images/I/71twnynE71L._AC_UL320_.jpg',
-        price: 29.99,
-        isPopular: true,
-        isRecommended: false),
-    Product(
-        name: 'Lightweight ABS',
-        catagory: 'Luggage & Travel',
-        imageUrl:
-            'https://m.media-amazon.com/images/I/81IWqnzKiiL._AC_UL320_.jpg',
-        price: 44.99,
-        isPopular: true,
-        isRecommended: false),
-    Product(
-        name: 'Cotton hoodie',
-        catagory: 'Men',
-        imageUrl:
-            'https://m.media-amazon.com/images/I/71trlmd1g6L._AC_UL320_.jpg',
-        price: 86.99,
-        isPopular: true,
-        isRecommended: false),
-    Product(
-        name: 'cotton Shirts',
-        catagory: 'Men',
-        imageUrl:
-            'https://m.media-amazon.com/images/I/61NAbTElNEL._AC_UL320_.jpg',
-        price: 20.99,
-        isPopular: true,
-        isRecommended: true),
-    Product(
-        name: 'Boy jacket',
-        catagory: 'Kids & Baby',
-        imageUrl:
-            'https://m.media-amazon.com/images/I/71DIFMUCTAL._AC_UL320_.jpg',
-        price: 31.99,
-        isPopular: true,
-        isRecommended: true),
-    Product(
-        name: 'Girls Skirt',
-        catagory: 'Kids & Baby',
-        imageUrl:
-            'https://m.media-amazon.com/images/I/81WVBb1njTL._AC_UL320_.jpg',
-        price: 12.99,
-        isPopular: true,
-        isRecommended: true),
-    Product(
-        name: 'Printed Raincoat',
-        catagory: 'Kids & Baby',
-        imageUrl:
-            'https://m.media-amazon.com/images/I/81T5z9xdQaL._AC_UL320_.jpg',
-        price: 26.64,
-        isPopular: false,
-        isRecommended: true),
-  ];
+  const Cart({required this.products});
+
+  double get subtotal =>
+      products.fold(0, (total, current) => total + current.price);
+
+  double deliveryFee(double subtotal) {
+    if (subtotal >= 30) {
+      return 0.0;
+    } else {
+      return 10.0;
+    }
+  }
+
+  double total(double subtotal, double deliveryFee) {
+    return subtotal + deliveryFee;
+  }
+
+  String freeDelivery(double subtotal) {
+    if (subtotal >= 30) {
+      return 'You have Free delivery';
+    } else {
+      double missing = 30.0 - subtotal;
+      return 'Add \$${missing.toStringAsFixed(2)} for Free Delivery';
+    }
+  }
+
+  String get subtotalString => subtotal.toStringAsFixed(2);
+  String get totalString =>
+      total(subtotal, deliveryFee(subtotal)).toStringAsFixed(2);
+  String get deliveryFeeString => deliveryFee(subtotal).toStringAsFixed(2);
+  String get freeDeliveryString => freeDelivery(subtotal);
+
   @override
-  List<Object?> get props => [];
+  List<Object?> get props => [products];
 }

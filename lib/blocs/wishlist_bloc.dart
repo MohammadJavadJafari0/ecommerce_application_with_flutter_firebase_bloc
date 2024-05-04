@@ -34,6 +34,7 @@ class WishlistBloc extends Bloc<WishlistEvent, WishlistState> {
     AddWishListProduct event,
     WishlistState state,
   ) async* {
+    print('AddWishListProduct event received');
     if (state is WishlistLoaded) {
       try {
         yield WishlistLoaded(

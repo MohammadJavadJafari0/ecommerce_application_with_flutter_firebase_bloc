@@ -16,6 +16,7 @@ class WishlistScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    print('WishlistScreen build method called');
     return Scaffold(
       appBar: CustomAppBar(title: 'Wishlist'),
       bottomNavigationBar: CostumNavBar(),

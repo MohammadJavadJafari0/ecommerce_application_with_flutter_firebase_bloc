@@ -1,4 +1,5 @@
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:ecommerce_application_with_flutter_firebase_bloc/blocs/cart/cart_bloc.dart';
 import 'package:ecommerce_application_with_flutter_firebase_bloc/blocs/wishlist_bloc.dart';
 import 'package:ecommerce_application_with_flutter_firebase_bloc/models/product_model.dart';
 import 'package:flutter/material.dart';
@@ -37,10 +38,10 @@ class ProductScreen extends StatelessWidget {
                   builder: (context, state) {
                 return IconButton(
                     onPressed: () {
+                      print('Add to Wishlist button pressed');
                       context
                           .read<WishlistBloc>()
                           .add(AddWishListProduct(product: product));
-
                       final snackBar =
                           SnackBar(content: Text('Added to your Wishlist!'));
                       ScaffoldMessenger.of(context).showSnackBar(snackBar);
@@ -50,13 +51,22 @@ class ProductScreen extends StatelessWidget {
                       color: Colors.white,
                     ));
               }),
-              ElevatedButton(
-                  style: ElevatedButton.styleFrom(primary: Colors.white),
-                  onPressed: () {},
-                  child: Text(
-                    'ADD TO CART',
-                    style: Theme.of(context).textTheme.headline3!,
-                  ))
+              BlocBuilder<CartBloc, CartState>(
+                builder: (context, state) {
+                  return ElevatedButton(
+                      style: ElevatedButton.styleFrom(primary: Colors.white),
+                      onPressed: () {
+                        context
+                            .read<CartBloc>()
+                            .add(CartProductAdded(product: product));
+                        Navigator.pushNamed(context, '/cart');
+                      },
+                      child: Text(
+                        'ADD TO CART',
+                        style: Theme.of(context).textTheme.headline3!,
+                      ));
+                },
+              )
             ],
           ),
         ),
@@ -110,6 +120,35 @@ class ProductScreen extends StatelessWidget {
                     ]),
                   ),
                 ),
+                BlocBuilder<CartBloc, CartState>(builder: (context, state) {
+                  if (state is CartLoading) {
+                    return Center(child: CircularProgressIndicator());
+                  }
+                  if (state is CartLoaded) {
+                    return Expanded(
+                        child: IconButton(
+                            onPressed: () {
+                              context
+                                  .read<CartBloc>()
+                                  .add(CartProductAdded(product: product));
+                            },
+                            icon: Icon(
+                              Icons.add_circle,
+                              color: Colors.white,
+                            )));
+                  } else {
+                    return Text('Something went wrong');
+                  }
+                }),
+                // isWishlist
+                //     ? Expanded(
+                //         child: IconButton(
+                //             onPressed: () {},
+                //             icon: Icon(
+                //               Icons.delete,
+                //               color: Colors.white,
+                //             )))
+                //     : SizedBox(),
               ],
             ),
           ),

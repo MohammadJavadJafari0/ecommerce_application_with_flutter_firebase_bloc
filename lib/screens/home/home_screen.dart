@@ -19,37 +19,41 @@ class HomeScreen extends StatelessWidget {
       data: customTheme(),
       child: Scaffold(
         appBar: CustomAppBar(
-          title: 'Zero to Unicorn',
+          title: 'MJ',
         ),
         bottomNavigationBar: CostumNavBar(),
-        body: Column(
+        body: ListView(
           children: [
-            Container(
-              child: CarouselSlider(
-                options: CarouselOptions(
-                    aspectRatio: 1.5,
-                    viewportFraction: 0.9,
-                    enlargeCenterPage: true,
-                    enlargeStrategy: CenterPageEnlargeStrategy.height),
-                items: Category.catagories
-                    .map((category) => HeroCarouselCard.HeroCarouselCard(
-                          category: category,
-                        ))
-                    .toList(),
-              ),
-            ),
-            SectionTitle(title: 'RECOMMENDED'),
-            // Filter products by 'isRecommended' and convert the result to a list
-            ProductCarousel(
-                products: Product.products
-                    .where((product) => product.isRecommended)
-                    .toList()),
+            Column(
+              children: [
+                Container(
+                  child: CarouselSlider(
+                    options: CarouselOptions(
+                        aspectRatio: 1.5,
+                        viewportFraction: 0.9,
+                        enlargeCenterPage: true,
+                        enlargeStrategy: CenterPageEnlargeStrategy.height),
+                    items: Category.catagories
+                        .map((category) => HeroCarouselCard.HeroCarouselCard(
+                              category: category,
+                            ))
+                        .toList(),
+                  ),
+                ),
+                SectionTitle(title: 'RECOMMENDED'),
+                // Filter products by 'isRecommended' and convert the result to a list
+                ProductCarousel(
+                    products: Product.products
+                        .where((product) => product.isRecommended)
+                        .toList()),
 
-            SectionTitle(title: 'MOST POPULAR'),
-            ProductCarousel(
-                products: Product.products
-                    .where((product) => product.isPopular)
-                    .toList()),
+                SectionTitle(title: 'MOST POPULAR'),
+                ProductCarousel(
+                    products: Product.products
+                        .where((product) => product.isPopular)
+                        .toList()),
+              ],
+            ),
           ],
         ),
       ),
