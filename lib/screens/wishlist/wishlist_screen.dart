@@ -1,10 +1,7 @@
 import 'package:ecommerce_application_with_flutter_firebase_bloc/blocs/wishlist_bloc.dart';
-import 'package:ecommerce_application_with_flutter_firebase_bloc/models/wishlist_model.dart';
 import 'package:flutter/material.dart';
 import 'package:ecommerce_application_with_flutter_firebase_bloc/widgets/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
-import '../../models/models.dart';
 
 class WishlistScreen extends StatelessWidget {
   static const String routeName = '/wishlist';
@@ -18,16 +15,16 @@ class WishlistScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     print('WishlistScreen build method called');
     return Scaffold(
-      appBar: CustomAppBar(title: 'Wishlist'),
+      appBar: CustomAppbar(title: 'Wishlist'),
       bottomNavigationBar: CostumNavBar(),
       body: BlocBuilder<WishlistBloc, WishlistState>(builder: (context, state) {
-        if (state is WishlistLoading) {
+        if (state is Wishlistloading) {
           return Center(
             child: CircularProgressIndicator(),
           );
         }
         ;
-        if (state is WishlistLoaded) {
+        if (state is Wishlistloaded) {
           return GridView.builder(
             padding:
                 const EdgeInsets.symmetric(horizontal: 8.0, vertical: 16.0),

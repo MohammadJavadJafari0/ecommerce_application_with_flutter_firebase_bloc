@@ -1,7 +1,6 @@
 import 'package:bloc/bloc.dart';
-import 'package:ecommerce_application_with_flutter_firebase_bloc/models/cart_model.dart';
-import 'package:ecommerce_application_with_flutter_firebase_bloc/models/models.dart';
 import 'package:equatable/equatable.dart';
+import '../../models/category.dart';
 
 part 'cart_event.dart';
 part 'cart_state.dart';
@@ -26,7 +25,7 @@ class CartBloc extends Bloc<CartEvent, CartState> {
     yield CartLoading();
     try {
       await Future<void>.delayed(Duration(seconds: 1));
-      yield CartLoaded(cart: Cart(products: []));
+      yield CartLoaded();
     } catch (_) {}
   }
 
@@ -35,8 +34,8 @@ class CartBloc extends Bloc<CartEvent, CartState> {
     if (state is CartLoaded) {
       try {
         yield CartLoaded(
-          cart: Cart(products: List.from(state.cart.products)..add(event.product)),
-        );
+            cart: Cart(
+                products: List.from(state.cart.products)..add(event.product)));
       } catch (_) {}
     }
   }
@@ -46,8 +45,9 @@ class CartBloc extends Bloc<CartEvent, CartState> {
     if (state is CartLoaded) {
       try {
         yield CartLoaded(
-          cart: Cart(products: List.from(state.cart.products)..remove(event.product)),
-        );
+            cart: Cart(
+                products: List.from(state.cart.products)
+                  ..remove(event.product)));
       } catch (_) {}
     }
   }

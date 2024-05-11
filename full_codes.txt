@@ -2,9 +2,8 @@ in blocs/cart foldar =
 cart_bloc.dart :
 
 import 'package:bloc/bloc.dart';
-import 'package:ecommerce_application_with_flutter_firebase_bloc/models/cart_model.dart';
-import 'package:ecommerce_application_with_flutter_firebase_bloc/models/product_model.dart';
 import 'package:equatable/equatable.dart';
+import '../../models/category.dart';
 
 part 'cart_event.dart';
 part 'cart_state.dart';
@@ -38,9 +37,8 @@ class CartBloc extends Bloc<CartEvent, CartState> {
     if (state is CartLoaded) {
       try {
         yield CartLoaded(
-            cart: Cart((
-          Products: List.from(state.cart.products)..add(event.product)
-        )));
+            cart: Cart(
+                products: List.from(state.cart.products)..add(event.product)));
       } catch (_) {}
     }
   }
@@ -50,9 +48,9 @@ class CartBloc extends Bloc<CartEvent, CartState> {
     if (state is CartLoaded) {
       try {
         yield CartLoaded(
-            cart: Cart((
-          Products: List.from(state.cart.products)..remove(event.product)
-        )));
+            cart: Cart(
+                products: List.from(state.cart.products)
+                  ..remove(event.product)));
       } catch (_) {}
     }
   }
@@ -82,19 +80,19 @@ class CartStarted extends CartEvent {
 class CartProductAdded extends CartEvent {
   final Product product;
 
-  const CartProductAdded({required this.product});
+  const CartProductAdded(this.product);
 
   @override
-  List<Object> get props => [];
+  List<Object> get props => [product];
 }
 
 class CartProductRemoved extends CartEvent {
   final Product product;
 
-  const CartProductRemoved({required this.product});
-
+  const CartProductRemoved(this.product);
+  
   @override
-  List<Object> get props => [];
+  List<Object> get props => [Product];
 }
 
 
@@ -104,31 +102,30 @@ cart_state.dart :
 
 part of 'cart_bloc.dart';
 
-sealed class CartState extends Equatable {
+abstract class CartState extends Equatable {
   const CartState();
 
   @override
   List<Object> get props => [];
 }
 
-final class CartLoading extends CartState {
+class CartLoading extends CartState {
   @override
   List<Object> get props => [];
 }
 
-final class CartLoaded extends CartState {
+class CartLoaded extends CartState {
   final Cart cart;
 
   const CartLoaded({this.cart = const Cart()});
   @override
-  List<Object> get props => [];
+  List<Object> get props => [cart];
 }
 
-final class CartError extends CartState {
+class CartError extends CartState {
   @override
   List<Object> get props => [];
 }
-
 
 
 
@@ -136,45 +133,45 @@ final class CartError extends CartState {
 in blocs foldar =
 wishlist_bloc.dart :
 
+import 'dart:async';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:ecommerce_application_with_flutter_firebase_bloc/models/category.dart';
 import 'package:equatable/equatable.dart';
-import 'package:ecommerce_application_with_flutter_firebase_bloc/models/models.dart';
-import 'package:ecommerce_application_with_flutter_firebase_bloc/models/wishlist_model.dart';
 
 part 'wishlist_event.dart';
 part 'wishlist_state.dart';
 
 class WishlistBloc extends Bloc<WishlistEvent, WishlistState> {
-  WishlistBloc() : super(WishlistLoading());
+  WishlistBloc() : super(Wishlistloading());
 
   @override
   Stream<WishlistState> mapEventToState(
     WishlistEvent event,
   ) async* {
-    if (event is StarWishList) {
-      yield* _mapStarWishlistToState();
-    } else if (event is AddWishListProduct) {
-      yield* _mapAddWishlistProductToState(event, state);
-    } else if (event is RemoveWishListProduct) {
-      yield* _mapRemoveWishlistProductToState(event, state);
+    if (event is StarWishlist) {
+      yield* _mapStartWishlistToState();
+    } else if (event is AddWishlistProduct) {
+      yield* _mapAddWishlistToState(event, state);
+    } else if (event is RemoveWishlistProduct) {
+      yield* _mapRemoveWishlistToState(event, state);
     }
   }
 
-  Stream<WishlistState> _mapStarWishlistToState() async* {
-    yield WishlistLoading();
+  Stream<WishlistState> _mapStartWishlistToState() async* {
+    yield Wishlistloading();
     try {
       await Future<void>.delayed(Duration(seconds: 1));
-      yield WishlistLoaded();
+      yield Wishlistloaded();
     } catch (_) {}
   }
 
-  Stream<WishlistState> _mapAddWishlistProductToState(
-    AddWishListProduct event,
+  Stream<WishlistState> _mapAddWishlistToState(
+    AddWishlistProduct event,
     WishlistState state,
   ) async* {
-    if (state is WishlistLoaded) {
+    if (state is Wishlistloaded) {
       try {
-        yield WishlistLoaded(
+        yield Wishlistloaded(
           wishlist: Wishlist(
             products: List.from(state.wishlist.products)..add(event.product),
           ),
@@ -183,13 +180,13 @@ class WishlistBloc extends Bloc<WishlistEvent, WishlistState> {
     }
   }
 
-  Stream<WishlistState> _mapRemoveWishlistProductToState(
-    RemoveWishListProduct event,
+  Stream<WishlistState> _mapRemoveWishlistToState(
+    RemoveWishlistProduct event,
     WishlistState state,
   ) async* {
-    if (state is WishlistLoaded) {
+    if (state is Wishlistloaded) {
       try {
-        yield WishlistLoaded(
+        yield Wishlistloaded(
           wishlist: Wishlist(
             products: List.from(state.wishlist.products)..remove(event.product),
           ),
@@ -198,6 +195,7 @@ class WishlistBloc extends Bloc<WishlistEvent, WishlistState> {
     }
   }
 }
+
 
 
 in blocs foldar =
@@ -212,25 +210,26 @@ abstract class WishlistEvent extends Equatable {
   List<Object?> get props => [];
 }
 
-class StarWishList extends WishlistEvent {}
+class StarWishlist extends WishlistEvent {}
 
-class AddWishListProduct extends WishlistEvent {
+class AddWishlistProduct extends WishlistEvent {
   final Product product;
 
-  const AddWishListProduct({required this.product});
+  const AddWishlistProduct({required this.product});
 
   @override
   List<Object?> get props => [product];
 }
 
-class RemoveWishListProduct extends WishlistEvent {
+class RemoveWishlistProduct extends WishlistEvent {
   final Product product;
 
-  const RemoveWishListProduct({required this.product});
+  const RemoveWishlistProduct({required this.product});
 
   @override
   List<Object?> get props => [product];
 }
+
 
 
 in blocs foldar =
@@ -343,46 +342,51 @@ TextTheme textTheme() {
 in models foldar = 
 cart_model.dart :
 
-import 'package:ecommerce_application_with_flutter_firebase_bloc/models/product_model.dart';
 import 'package:equatable/equatable.dart';
+import 'category.dart';
 
 class Cart extends Equatable {
   final List<Product> products;
-
-  const Cart(({List Products}) param0, {required this.products});
+  const Cart({this.products = const <Product>[]});
 
   double get subtotal =>
       products.fold(0, (total, current) => total + current.price);
 
-  double deliveryFee(subtotal) {
-    if (subtotal >= 30) {
+  String get subtotalString => subtotal.toStringAsFixed(2);
+
+  double deliveryFree(subtotal) {
+    if (subtotal >= 100.0) {
       return 0.0;
-    } else
-      return 10.0;
-  }
-
-  double total(subtotal, deliveryFee) {
-    return subtotal + deliveryFee;
-  }
-
-  String freeDelivery(subtotal) {
-    if (subtotal >= 30) {
-      return 'You have Free delivey';
     } else {
-      double missing = 30.0 - subtotal;
-      return 'Add \$${missing.toStringAsFixed(2)} for Free Delivery';
+      return 10.0;
     }
   }
 
-  String get subtotalString => subtotal.toStringAsFixed(2);
-  String get totalString =>
-      total(subtotal, deliveryFee(subtotal)).toStringAsFixed(2);
-  String get deliveryFeeString => deliveryFee(subtotal).toStringAsFixed(2);
+  String get deliveryFreeString => deliveryFree(subtotal).toStringAsFixed(2);
+
+  String freeDelivery(subtotal) {
+    if (subtotal >= 100.0) {
+      return 'You have Free Delivery';
+    } else {
+      double missing = 30.0 - subtotal;
+      return 'Add \£${missing.toStringAsFixed(2)} for FREE Delivery';
+    }
+  }
+
   String get freeDeliveryString => freeDelivery(subtotal);
+
+  double total(subtosubtotal, deliveryFree) {
+    return subtotal + deliveryFree(subtotal);
+  }
+
+  String get totalString => total(subtotal, deliveryFree).toStringAsFixed(2);
 
   @override
   List<Object?> get props => [products];
 }
+
+
+
 
 
 
@@ -427,6 +431,22 @@ class Category extends Equatable {
     ),
   ];
 }
+
+
+
+
+in models foldar = 
+category.dart :
+
+
+export 'catagory_model.dart';
+export 'product_model.dart';
+export 'wishlist_model.dart';
+export 'cart_model.dart';
+
+
+
+
 
 
 in models foldar = 
@@ -563,7 +583,10 @@ class Wishlist extends Equatable {
 in screens foldar , cart foldar =
 cart_screen.dart :
 
+import 'package:ecommerce_application_with_flutter_firebase_bloc/models/cart_model.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../blocs/cart/cart_bloc.dart';
 import '../../widgets/widgets.dart';
 
 class CartScreen extends StatelessWidget {
@@ -575,12 +598,176 @@ class CartScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final cart = Cart(products: []);
     return Scaffold(
-      appBar: CustomAppBar(title: 'Cart'),
-      bottomNavigationBar: CostumNavBar(),
-    );
+        appBar: CustomAppBar(title: 'Cart'),
+        bottomNavigationBar: BottomAppBar(
+          color: Colors.black,
+          child: Container(
+            height: 70,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(primary: Colors.white),
+                  onPressed: () {},
+                  child: Text(
+                    'GO TO CHECKOUT',
+                    style: Theme.of(context).textTheme.headline3!,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+        body: BlocBuilder<CartBloc, CartState>(
+          builder: (context, state) {
+            if (state is CartLoading) {
+              return Center(
+                child: CircularProgressIndicator(),
+              );
+            }
+            if (state is CartLoaded) {
+              return Padding(
+                padding: const EdgeInsets.symmetric(
+                    horizontal: 20.0, vertical: 10.0),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Column(
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              state.cart.freeDeliveryString,
+                              style: Theme.of(context).textTheme.headline5,
+                            ),
+                            ElevatedButton(
+                              onPressed: () {
+                                Navigator.pushNamed(context, '/');
+                              },
+                              style: ElevatedButton.styleFrom(
+                                primary: Colors.black,
+                                shape: RoundedRectangleBorder(),
+                                elevation: 0,
+                              ),
+                              child: Text(
+                                'Add More Items',
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .headline5!
+                                    .copyWith(color: Colors.white),
+                              ),
+                            ),
+                          ],
+                        ),
+                        SizedBox(height: 10),
+                        SizedBox(
+                          height: 350,
+                          child: ListView.builder(
+                            itemBuilder: (context, index) {
+                              return CartProductCard(
+                                  product: state.cart.products[index]);
+                            },
+                            itemCount: state.cart.products.length,
+                          ),
+                        ),
+                      ],
+                    ),
+                    Column(
+                      children: [
+                        Divider(thickness: 2),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 40, vertical: 10),
+                          child: Column(
+                            children: [
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text('SUBTOTAL',
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .headline5),
+                                  Text('\$${state.cart.subtotalString}',
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .headline5),
+                                ],
+                              ),
+                              SizedBox(height: 10),
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text('Deliver Fee',
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .headline5),
+                                  Text('\$${state.cart.deliveryFreeString}',
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .headline5),
+                                ],
+                              ),
+                              Stack(
+                                children: [
+                                  Container(
+                                    width: MediaQuery.of(context).size.width,
+                                    height: 50,
+                                    decoration: BoxDecoration(
+                                        color: Colors.black.withAlpha(50)),
+                                  ),
+                                  Container(
+                                    width: MediaQuery.of(context).size.width,
+                                    height: 40,
+                                    decoration:
+                                        BoxDecoration(color: Colors.black),
+                                    child: Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 40),
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Text(
+                                            'Total',
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .headline5!
+                                                .copyWith(color: Colors.white),
+                                          ),
+                                          Text(
+                                            '\$${state.cart.totalString}',
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .headline5!
+                                                .copyWith(color: Colors.white),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              );
+            } else {
+              return Text('Something went wrong');
+            }
+          },
+        ));
   }
 }
+
 
 
 
@@ -647,58 +834,51 @@ home_screen.dart :
 
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
-import 'package:ecommerce_application_with_flutter_firebase_bloc/config/theme.dart';
-import 'package:ecommerce_application_with_flutter_firebase_bloc/widgets/widgets.dart';
-
-import '../../models/models.dart';
+import '../../models/category.dart';
+import '../../widgets/widgets.dart';
 
 class HomeScreen extends StatelessWidget {
   static const String routeName = '/';
-
   static Route route() {
     return MaterialPageRoute(
-        builder: (_) => HomeScreen(), settings: RouteSettings(name: routeName));
+        settings: RouteSettings(name: routeName), builder: (_) => HomeScreen());
   }
 
   @override
   Widget build(BuildContext context) {
-    return Theme(
-      data: customTheme(),
-      child: Scaffold(
-        appBar: CustomAppBar(
-          title: 'Zero to Unicorn',
-        ),
-        bottomNavigationBar: CostumNavBar(),
-        body: Column(
-          children: [
-            Container(
-              child: CarouselSlider(
-                options: CarouselOptions(
-                    aspectRatio: 1.5,
-                    viewportFraction: 0.9,
-                    enlargeCenterPage: true,
-                    enlargeStrategy: CenterPageEnlargeStrategy.height),
-                items: Category.catagories
-                    .map((category) => HeroCarouselCard.HeroCarouselCard(
-                          category: category,
-                        ))
-                    .toList(),
+    return Scaffold(
+      appBar: CustomAppbar(title: 'MJ'),
+      bottomNavigationBar: CostumNavBar(),
+      body: ListView(
+        children: [
+          Container(
+            child: CarouselSlider(
+              options: CarouselOptions(
+                autoPlay: true,
+                autoPlayInterval: const Duration(seconds: 3),
+                aspectRatio: 1.5,
+                viewportFraction: 0.9,
+                enlargeCenterPage: true,
+                enlargeStrategy: CenterPageEnlargeStrategy.height,
+                enableInfiniteScroll: false,
               ),
+              items: Category.catagories
+                  .map((Category) => HeroCarouselCard(category: Category))
+                  .toList(),
             ),
-            SectionTitle(title: 'RECOMMENDED'),
-            // Filter products by 'isRecommended' and convert the result to a list
-            ProductCarousel(
-                products: Product.products
-                    .where((product) => product.isRecommended)
-                    .toList()),
-
-            SectionTitle(title: 'MOST POPULAR'),
-            ProductCarousel(
-                products: Product.products
-                    .where((product) => product.isPopular)
-                    .toList()),
-          ],
-        ),
+          ),
+          SectionTitle(title: 'Recommended'),
+          ProductCarousel(
+            products: Product.products
+                .where((product) => product.isRecommended)
+                .toList(),
+          ),
+          SectionTitle(title: 'Most Popular'),
+          ProductCarousel(
+            products:
+                Product.products.where((product) => product.isPopular).toList(),
+          ),
+        ],
       ),
     );
   }
@@ -706,10 +886,12 @@ class HomeScreen extends StatelessWidget {
 
 
 
+
 in screens foldar , product foldar =
 product_screen.dart :
 
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:ecommerce_application_with_flutter_firebase_bloc/blocs/cart/cart_bloc.dart';
 import 'package:ecommerce_application_with_flutter_firebase_bloc/blocs/wishlist_bloc.dart';
 import 'package:ecommerce_application_with_flutter_firebase_bloc/models/product_model.dart';
 import 'package:flutter/material.dart';
@@ -718,6 +900,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 class ProductScreen extends StatelessWidget {
   static const String routeName = '/product';
+
   static Route route({required Product product}) {
     return MaterialPageRoute(
         builder: (_) => ProductScreen(product: product),
@@ -725,6 +908,7 @@ class ProductScreen extends StatelessWidget {
   }
 
   final Product product;
+
   const ProductScreen({required this.product});
 
   @override
@@ -739,35 +923,38 @@ class ProductScreen extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
               IconButton(
-                  onPressed: () {},
-                  icon: Icon(
-                    Icons.share,
-                    color: Colors.white,
-                  )),
+                onPressed: () {},
+                icon: Icon(
+                  Icons.share,
+                  color: Colors.white,
+                ),
+              ),
               BlocBuilder<WishlistBloc, WishlistState>(
-                  builder: (context, state) {
-                return IconButton(
+                builder: (context, state) {
+                  return IconButton(
                     onPressed: () {
-                      context
-                          .read<WishlistBloc>()
-                          .add(AddWishListProduct(product: product));
-
-                      final snackBar =
-                          SnackBar(content: Text('Added to your Wishlist!'));
+                      context.read<WishlistBloc>().add(AddWishListProduct(product: product));
+                      final snackBar = SnackBar(content: Text('Added to your Wishlist!'));
                       ScaffoldMessenger.of(context).showSnackBar(snackBar);
                     },
                     icon: Icon(
                       Icons.favorite,
                       color: Colors.white,
-                    ));
-              }),
+                    ),
+                  );
+                },
+              ),
               ElevatedButton(
-                  style: ElevatedButton.styleFrom(primary: Colors.white),
-                  onPressed: () {},
-                  child: Text(
-                    'ADD TO CART',
-                    style: Theme.of(context).textTheme.headline3!,
-                  ))
+                style: ElevatedButton.styleFrom(primary: Colors.white),
+                onPressed: () {
+                  context.read<CartBloc>().add(CartProductAdded(product: product));
+                  Navigator.pushNamed(context, '/cart');
+                },
+                child: Text(
+                  'ADD TO CART',
+                  style: Theme.of(context).textTheme.headline3!,
+                ),
+              ),
             ],
           ),
         ),
@@ -779,6 +966,7 @@ class ProductScreen extends StatelessWidget {
               aspectRatio: 1.5,
               viewportFraction: 0.9,
               enlargeCenterPage: true,
+              enableInfiniteScroll: false,
               enlargeStrategy: CenterPageEnlargeStrategy.height,
             ),
             items: [
@@ -803,22 +991,18 @@ class ProductScreen extends StatelessWidget {
                   color: Colors.black,
                   child: Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                    child: Row(children: [
-                      Text(
-                        product.name,
-                        style: Theme.of(context)
-                            .textTheme
-                            .headline5!
-                            .copyWith(color: Colors.white),
-                      ),
-                      Text(
-                        '${product.price}',
-                        style: Theme.of(context)
-                            .textTheme
-                            .headline5!
-                            .copyWith(color: Colors.white),
-                      ),
-                    ]),
+                    child: Row(
+                      children: [
+                        Text(
+                          product.name,
+                          style: Theme.of(context).textTheme.headline5!.copyWith(color: Colors.white),
+                        ),
+                        Text(
+                          '${product.price}',
+                          style: Theme.of(context).textTheme.headline5!.copyWith(color: Colors.white),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ],
@@ -838,7 +1022,7 @@ class ProductScreen extends StatelessWidget {
                     'This is a product with high quality.',
                     style: Theme.of(context).textTheme.bodyText1,
                   ),
-                )
+                ),
               ],
             ),
           ),
@@ -855,7 +1039,7 @@ class ProductScreen extends StatelessWidget {
                     'This is a product with high quality.',
                     style: Theme.of(context).textTheme.bodyText1,
                   ),
-                )
+                ),
               ],
             ),
           ),
@@ -925,10 +1109,11 @@ class SplashScreen extends StatelessWidget {
 in screens foldar , wishlist foldar =
 wishlist_screen.dart :
 
+import 'package:ecommerce_application_with_flutter_firebase_bloc/blocs/wishlist_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:ecommerce_application_with_flutter_firebase_bloc/widgets/widgets.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../models/models.dart';
 
 class WishlistScreen extends StatelessWidget {
   static const String routeName = '/wishlist';
@@ -940,30 +1125,45 @@ class WishlistScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    print('WishlistScreen build method called');
     return Scaffold(
-      appBar: CustomAppBar(title: 'Wishlist'),
+      appBar: CustomAppbar(title: 'Wishlist'),
       bottomNavigationBar: CostumNavBar(),
-      body: GridView.builder(
-        padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 16.0),
-        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 1,
-          childAspectRatio: 2.4,
-        ),
-        itemCount: Product.products.length,
-        itemBuilder: (BuildContext context, int index) {
+      body: BlocBuilder<WishlistBloc, WishlistState>(builder: (context, state) {
+        if (state is Wishlistloading) {
           return Center(
-            child: ProductCard(
-              product: Product.products[index],
-              widthFactor: 1.1,
-              leftPosition: 100,
-              isWishlist: true,
-            ),
+            child: CircularProgressIndicator(),
           );
-        },
-      ),
+        }
+        ;
+        if (state is Wishlistloaded) {
+          return GridView.builder(
+            padding:
+                const EdgeInsets.symmetric(horizontal: 8.0, vertical: 16.0),
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 1,
+              childAspectRatio: 2.4,
+            ),
+            itemCount: state.wishlist.products.length,
+            itemBuilder: (BuildContext context, int index) {
+              return Center(
+                child: ProductCard(
+                  product: state.wishlist.products[index],
+                  widthFactor: 1.1,
+                  leftPosition: 100,
+                  isWishlist: true,
+                ),
+              );
+            },
+          );
+        } else {
+          return Text('Something went wrong');
+        }
+      }),
     );
   }
 }
+
 
 
 
@@ -985,17 +1185,22 @@ export 'product/product_screen.dart';
 in widgets foldar = 
 cart_product_card.dart :
 
-import 'package:ecommerce_application_with_flutter_firebase_bloc/models/models.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import '../blocs/cart/cart_bloc.dart';
+import '../models/category.dart';
 
 class CartProductCard extends StatelessWidget {
   final Product product;
-  const CartProductCard({super.key, required this.product});
+
+  const CartProductCard({
+    required this.product,
+  });
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 8.0),
+      padding: const EdgeInsets.only(bottom: 8),
       child: Row(
         children: [
           Image.network(
@@ -1016,23 +1221,39 @@ class CartProductCard extends StatelessWidget {
                   style: Theme.of(context).textTheme.headline5,
                 ),
                 Text(
-                  '\$${product.price}',
+                  '\£${product.price}',
                   style: Theme.of(context).textTheme.headline6,
-                )
+                ),
               ],
             ),
           ),
-          SizedBox(width: 10),
-          Row(
-            children: [
-              IconButton(onPressed: () {}, icon: Icon(Icons.remove_circle)),
-              Text(
-                '1',
-                style: Theme.of(context).textTheme.headline5,
-              ),
-              IconButton(onPressed: () {}, icon: Icon(Icons.add_circle))
-            ],
-          )
+          SizedBox(
+            width: 10,
+          ),
+          BlocBuilder<CartBloc, CartState>(
+            builder: (context, state) {
+              return Row(
+                children: [
+                  IconButton(
+                    onPressed: () {
+                      context.read<CartBloc>().add(CartProductRemoved(product));
+                    },
+                    icon: Icon(Icons.remove_circle),
+                  ),
+                  Text(
+                    '1',
+                    style: Theme.of(context).textTheme.headline5,
+                  ),
+                  IconButton(
+                    onPressed: () {
+                      context.read<CartBloc>().add(CartProductAdded(product));
+                    },
+                    icon: Icon(Icons.add_circle),
+                  ),
+                ],
+              );
+            },
+          ),
         ],
       ),
     );
@@ -1383,7 +1604,7 @@ class MyApp extends StatelessWidget {
     print('MyApp build method called');
     return MultiBlocProvider(
       providers: [
-        BlocProvider(create: (_) => WishlistBloc()..add(StarWishList())),
+        BlocProvider(create: (_) => WishlistBloc()..add(StarWishlist())),
         BlocProvider(create: (_) => CartBloc()..add(CartStarted())),
       ],
       child: MaterialApp(
@@ -1397,3 +1618,103 @@ class MyApp extends StatelessWidget {
     );
   }
 }
+
+
+
+
+pubsbec.yaml :
+
+
+name: ecommerce_application_with_flutter_firebase_bloc
+description: "A new Flutter project."
+# The following line prevents the package from being accidentally published to
+# pub.dev using `flutter pub publish`. This is preferred for private packages.
+publish_to: 'none' # Remove this line if you wish to publish to pub.dev
+
+# The following defines the version and build number for your application.
+# A version number is three numbers separated by dots, like 1.2.43
+# followed by an optional build number separated by a +.
+# Both the version and the builder number may be overridden in flutter
+# build by specifying --build-name and --build-number, respectively.
+# In Android, build-name is used as versionName while build-number used as versionCode.
+# Read more about Android versioning at https://developer.android.com/studio/publish/versioning
+# In iOS, build-name is used as CFBundleShortVersionString while build-number is used as CFBundleVersion.
+# Read more about iOS versioning at
+# https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
+# In Windows, build-name is used as the major, minor, and patch parts
+# of the product and file versions while build-number is used as the build suffix.
+version: 1.0.0+1
+
+environment:
+  sdk: '>=3.2.6 <4.0.0'
+
+# Dependencies specify other packages that your package needs in order to work.
+# To automatically upgrade your package dependencies to the latest versions
+# consider running `flutter pub upgrade --major-versions`. Alternatively,
+# dependencies can be manually updated by changing the version numbers below to
+# the latest version available on pub.dev. To see which dependencies have newer
+# versions available, run `flutter pub outdated`.
+dependencies:
+  flutter_bloc: ^7.0.0
+  carousel_slider: ^4.2.1
+  equatable: ^2.0.0
+  flutter:
+    sdk: flutter
+
+
+  # The following adds the Cupertino Icons font to your application.
+  # Use with the CupertinoIcons class for iOS style icons.
+  cupertino_icons: ^1.0.2
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+  # The "flutter_lints" package below contains a set of recommended lints to
+  # encourage good coding practices. The lint set provided by the package is
+  # activated in the `analysis_options.yaml` file located at the root of your
+  # package. See that file for information about deactivating specific lint
+  # rules and activating additional ones.
+  flutter_lints: ^2.0.0
+
+# For information on the generic Dart part of this file, see the
+# following page: https://dart.dev/tools/pub/pubspec
+
+# The following section is specific to Flutter packages.
+flutter:
+
+  # The following line ensures that the Material Icons font is
+  # included with your application, so that you can use the icons in
+  # the material Icons class.
+  uses-material-design: true
+
+  # To add assets to your application, add an assets section, like this:
+  assets:
+   - assets/
+
+  # An image asset can refer to one or more resolution-specific "variants", see
+  # https://flutter.dev/assets-and-images/#resolution-aware
+
+  # For details regarding adding assets from package dependencies, see
+  # https://flutter.dev/assets-and-images/#from-packages
+
+  # To add custom fonts to your application, add a fonts section here,
+  # in this "flutter" section. Each entry in this list should have a
+  # "family" key with the font family name, and a "fonts" key with a
+  # list giving the asset and other descriptors for the font. For
+  # example:
+  # fonts:
+  #   - family: Schyler
+  #     fonts:
+  #       - asset: fonts/Schyler-Regular.ttf
+  #       - asset: fonts/Schyler-Italic.ttf
+  #         style: italic
+  #   - family: Trajan Pro
+  #     fonts:
+  #       - asset: fonts/TrajanPro.ttf
+  #       - asset: fonts/TrajanPro_Bold.ttf
+  #         weight: 700
+  #
+  # For details regarding fonts from package dependencies,
+  # see https://flutter.dev/custom-fonts/#from-packages
+

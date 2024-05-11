@@ -18,7 +18,7 @@ class MyApp extends StatelessWidget {
     print('MyApp build method called');
     return MultiBlocProvider(
       providers: [
-        BlocProvider(create: (_) => WishlistBloc()..add(StarWishList())),
+        BlocProvider(create: (_) => WishlistBloc()..add(StartWishlist())),
         BlocProvider(create: (_) => CartBloc()..add(CartStarted())),
       ],
       child: MaterialApp(

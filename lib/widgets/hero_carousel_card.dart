@@ -1,11 +1,15 @@
-import 'package:ecommerce_application_with_flutter_firebase_bloc/models/models.dart';
 import 'package:flutter/material.dart';
+
+import '../models/category.dart';
 
 class HeroCarouselCard extends StatelessWidget {
   final Category? category;
   final Product? product;
-  const HeroCarouselCard.HeroCarouselCard(
-      {required this.category, this.product});
+
+  const HeroCarouselCard({
+    this.category,
+    this.product,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -16,15 +20,14 @@ class HeroCarouselCard extends StatelessWidget {
         }
       },
       child: Container(
-        margin: EdgeInsets.symmetric(horizontal: 5.0, vertical: 20.0),
+        margin: EdgeInsets.symmetric(horizontal: 5, vertical: 20),
         child: ClipRRect(
             borderRadius: BorderRadius.all(Radius.circular(5.0)),
             child: Stack(
               children: <Widget>[
                 Image.network(
-                    product == null ? category!.imageUrl : product!.imageUrl,
-                    fit: BoxFit.cover,
-                    width: 1000.0),
+                  product == null ? category!.imageUrl : product!.imageUrl,
+                    fit: BoxFit.cover, width: 1000.0),
                 Positioned(
                   bottom: 0.0,
                   left: 0.0,
@@ -56,6 +59,4 @@ class HeroCarouselCard extends StatelessWidget {
       ),
     );
   }
-
-  static fromProduct({required Product product}) {}
 }

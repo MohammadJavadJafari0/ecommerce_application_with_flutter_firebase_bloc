@@ -15,7 +15,7 @@ class CartScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final cart = Cart(products: []);
     return Scaffold(
-        appBar: CustomAppBar(title: 'Cart'),
+        appBar: CustomAppbar(title: 'Cart'),
         bottomNavigationBar: BottomAppBar(
           color: Colors.black,
           child: Container(
@@ -121,7 +121,7 @@ class CartScreen extends StatelessWidget {
                                       style: Theme.of(context)
                                           .textTheme
                                           .headline5),
-                                  Text('\$${state.cart.deliveryFeeString}',
+                                  Text('\$${state.cart.deliveryFreeString}',
                                       style: Theme.of(context)
                                           .textTheme
                                           .headline5),
