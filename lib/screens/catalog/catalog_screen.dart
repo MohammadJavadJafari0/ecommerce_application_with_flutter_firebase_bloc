@@ -39,7 +39,7 @@ class CatalogScreen extends StatelessWidget {
           return Center(
             child: ProductCard(
               product: filteredProducts[index],
-              widthFactor: 2.2, leftPosition: 30,
+              widthFactor: 2.2, leftposition: 30,
             ),
           );
         },

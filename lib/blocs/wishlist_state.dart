@@ -7,9 +7,9 @@ abstract class WishlistState extends Equatable {
   List<Object?> get props => [];
 }
 
-final class Wishlistloading extends WishlistState {}
+class Wishlistloading extends WishlistState {}
 
-final class Wishlistloaded extends Wishlistloading {
+class Wishlistloaded extends WishlistState {
   final Wishlist wishlist;
 
   Wishlistloaded({this.wishlist = const Wishlist()});

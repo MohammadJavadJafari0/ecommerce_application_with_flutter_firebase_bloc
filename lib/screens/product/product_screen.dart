@@ -137,7 +137,7 @@ class ProductScreen extends StatelessWidget {
               children: [
                 ListTile(
                   title: Text(
-                    'this is the best thing you can buy it. trust me and try it.',
+                    'This is a high quality product from MJ.',
                     style: Theme.of(context).textTheme.bodyText2,
                   ),
                 ),
@@ -155,7 +155,7 @@ class ProductScreen extends StatelessWidget {
               children: [
                 ListTile(
                   title: Text(
-                    'This is a product with high quality.',
+                    'This product will sent tommorow.',
                     style: Theme.of(context).textTheme.bodyText2,
                   ),
                 ),

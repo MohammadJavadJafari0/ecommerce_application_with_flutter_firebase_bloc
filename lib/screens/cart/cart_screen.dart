@@ -15,35 +15,36 @@ class CartScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final cart = Cart(products: []);
     return Scaffold(
-        appBar: CustomAppbar(title: 'Cart'),
-        bottomNavigationBar: BottomAppBar(
-          color: Colors.black,
-          child: Container(
-            height: 70,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(primary: Colors.white),
-                  onPressed: () {},
-                  child: Text(
-                    'GO TO CHECKOUT',
-                    style: Theme.of(context).textTheme.headline3!,
-                  ),
+      appBar: CustomAppbar(title: 'Cart'),
+      bottomNavigationBar: BottomAppBar(
+        color: Colors.black,
+        child: Container(
+          height: 70,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(primary: Colors.white),
+                onPressed: () {},
+                child: Text(
+                  'GO TO CHECKOUT',
+                  style: Theme.of(context).textTheme.headline3!,
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
-        body: BlocBuilder<CartBloc, CartState>(
-          builder: (context, state) {
-            if (state is CartLoading) {
-              return Center(
-                child: CircularProgressIndicator(),
-              );
-            }
-            if (state is CartLoaded) {
-              return Padding(
+      ),
+      body: BlocBuilder<CartBloc, CartState>(
+        builder: (context, state) {
+          if (state is CartLoading) {
+            return Center(
+              child: CircularProgressIndicator(),
+            );
+          }
+          if (state is CartLoaded) {
+            return SingleChildScrollView(
+              child: Padding(
                 padding: const EdgeInsets.symmetric(
                     horizontal: 20.0, vertical: 10.0),
                 child: Column(
@@ -81,11 +82,23 @@ class CartScreen extends StatelessWidget {
                         SizedBox(
                           height: 350,
                           child: ListView.builder(
+                            shrinkWrap: true,
                             itemBuilder: (context, index) {
                               return CartProductCard(
-                                  product: state.cart.products[index]);
+                                product: state.cart
+                                    .productQuantity(state.cart.products)
+                                    .keys
+                                    .elementAt(index),
+                                quantity: state.cart
+                                    .productQuantity(state.cart.products)
+                                    .values
+                                    .elementAt(index),
+                              );
                             },
-                            itemCount: state.cart.products.length,
+                            itemCount: state.cart
+                                .productQuantity(state.cart.products)
+                                .keys
+                                .length,
                           ),
                         ),
                       ],
@@ -117,7 +130,7 @@ class CartScreen extends StatelessWidget {
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,
                                 children: [
-                                  Text('Deliver Fee',
+                                  Text('Delivery Fee',
                                       style: Theme.of(context)
                                           .textTheme
                                           .headline5),
@@ -174,11 +187,13 @@ class CartScreen extends StatelessWidget {
                     ),
                   ],
                 ),
-              );
-            } else {
-              return Text('Something went wrong');
-            }
-          },
-        ));
+              ),
+            );
+          } else {
+            return Text('Something went wrong');
+          }
+        },
+      ),
+    );
   }
 }

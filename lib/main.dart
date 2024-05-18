@@ -16,7 +16,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     print('MyApp build method called');
-    return MultiBlocProvider(
+    return MultiBlocProvider(   
       providers: [
         BlocProvider(create: (_) => WishlistBloc()..add(StartWishlist())),
         BlocProvider(create: (_) => CartBloc()..add(CartStarted())),

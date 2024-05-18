@@ -1,17 +1,19 @@
+import 'package:ecommerce_application_with_flutter_firebase_bloc/blocs/cart/cart_bloc.dart';
 import 'package:ecommerce_application_with_flutter_firebase_bloc/models/models.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class ProductCard extends StatelessWidget {
   final Product product;
   final double widthFactor;
-  final double leftPosition;
+  final double leftposition;
   final bool isWishlist;
 
   const ProductCard({
     Key? key,
     required this.product,
     this.widthFactor = 2.5,
-    required this.leftPosition,
+    required this.leftposition,
     this.isWishlist = false,
   }) : super(key: key);
 
@@ -34,9 +36,9 @@ class ProductCard extends StatelessWidget {
           ),
           Positioned(
             bottom: 10,
-            left: leftPosition,
+            left: leftposition,
             child: Container(
-              width: widthValue - 5 - leftPosition,
+              width: widthValue - 5 - leftposition,
               height: 105,
               alignment: Alignment.bottomCenter,
               decoration: BoxDecoration(color: Colors.black.withAlpha(50)),
@@ -44,9 +46,9 @@ class ProductCard extends StatelessWidget {
           ),
           Positioned(
             bottom: 12,
-            left: leftPosition + 5,
+            left: leftposition + 5,
             child: Container(
-              width: widthValue - 15 - leftPosition,
+              width: widthValue - 15 - leftposition,
               height: 88,
               alignment: Alignment.bottomCenter,
               decoration: BoxDecoration(color: Colors.black.withAlpha(50)),
@@ -81,7 +83,11 @@ class ProductCard extends StatelessWidget {
                     ),
                     Expanded(
                         child: IconButton(
-                            onPressed: () {},
+                            onPressed: () {
+                              context
+                                  .read<CartBloc>()
+                                  .add(CartProductAdded(product));
+                            },
                             icon: Icon(
                               Icons.add_circle,
                               color: Colors.white,
@@ -89,7 +95,11 @@ class ProductCard extends StatelessWidget {
                     isWishlist
                         ? Expanded(
                             child: IconButton(
-                                onPressed: () {},
+                                onPressed: () {
+                                  context
+                                      .read<CartBloc>()
+                                      .add(CartProductRemoved(product));
+                                },
                                 icon: Icon(
                                   Icons.delete,
                                   color: Colors.white,
