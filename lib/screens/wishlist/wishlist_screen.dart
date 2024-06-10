@@ -52,7 +52,7 @@ class WishlistScreen extends StatelessWidget {
                       return ProductCard(
                         product: state.wishlist.products[index],
                         widthFactor: 1.1,
-                        leftposition: 180,
+                        leftposition: 0,
                         isWishlist: true,
                       );
                     },
